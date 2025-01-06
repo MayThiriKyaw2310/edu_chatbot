@@ -12,6 +12,12 @@ def initialize_gpt(api_key, model_name="gpt-4"):
         temperature=0.1,
         openai_api_key=api_key
     )
+def get_recent_conversation_history(conversation_history, num_lines=5):
+    """
+    Limit the conversation history to the most recent num_lines exchanges.
+    """
+    history_lines = conversation_history.split("\n")[-num_lines:]
+    return "\n".join(history_lines)
 
 # Helper functions to limit the size of the inputs
 def truncate_question(question, max_length=200):
