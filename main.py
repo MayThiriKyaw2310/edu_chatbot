@@ -13,6 +13,45 @@ def initialize_gpt(api_key, model_name="gpt-4"):
         openai_api_key=api_key
     )
 
+# Helper functions to limit the size of the inputs
+def get_recent_conversation_history(conversation_history, num_lines=5):
+    """
+    Limit the conversation history to the most recent num_lines exchanges.
+    """
+    history_lines = conversation_history.split("\n")[-num_lines:]
+    return "\n".join(history_lines)
+
+def truncate_question(question, max_length=200):
+    """
+    Truncate the question if it exceeds the max_length.
+    """
+    if len(question) > max_length:
+        return question[:max_length] + "..."
+    return question
+
+def limit_context_length(context, max_chars=500):
+    """
+    Limit the context to the first max_chars characters.
+    """
+    return context[:max_chars] if len(context) > max_chars else context
+
+# Function to create formatted prompt
+def create_formatted_prompt(conversation_history, question, context, burmese=True, num_history=5, max_question_length=200, max_context_length=500):
+    # Limit conversation history
+    conversation_history = get_recent_conversation_history(conversation_history, num_lines=num_history)
+    # Truncate question
+    question = truncate_question(question, max_length=max_question_length)
+    # Limit context length
+    context = limit_context_length(context, max_chars=max_context_length)
+
+    # Choose prompt template based on language
+    if burmese:
+        formatted_prompt = burmese_prompt.format(conversation_history=conversation_history, question=question, context=context)
+    else:
+        formatted_prompt = english_prompt.format(conversation_history=conversation_history, question=question, context=context)
+
+    return formatted_prompt
+
 # Prompts for Burmese and English
 burmese_prompt = PromptTemplate(
     input_variables=["conversation_history", "question", "context"],
@@ -45,6 +84,7 @@ english_prompt = PromptTemplate(
         Answer:  
     """
 )
+
 # Query function with language detection
 def query_with_language(llm, question, context="", conversation_history=""):
     try:
@@ -55,17 +95,13 @@ def query_with_language(llm, question, context="", conversation_history=""):
         else:
             language = "english"
             
-        if language == "burmese":
-            formatted_prompt = burmese_prompt.format(
-                conversation_history=conversation_history, question=question, context=context
-            )
-        else:
-            formatted_prompt = english_prompt.format(
-                conversation_history=conversation_history, question=question, context=context
-            )
-        
+        # Create a formatted prompt with a limited size
+        formatted_prompt = create_formatted_prompt(
+            conversation_history, question, context, burmese=(language=="burmese")
+        )
+
         # Get the model's response
-        response = llm.invoke(formatted_prompt)
+        response = llm.invoke(formatted_prompt, timeout=10)
         response_text = response.content.strip() if hasattr(response, "content") else str(response).strip()
 
         seen = set()
@@ -75,9 +111,8 @@ def query_with_language(llm, question, context="", conversation_history=""):
                 seen.add(word)
                 unique_response.append(word)
         
-        cleaned_response = ' '.join(unique_response) 
+        cleaned_response = ' '.join(unique_response)
         return cleaned_response
 
     except Exception as e:
         return f"An error occurred: {str(e)}"
-
