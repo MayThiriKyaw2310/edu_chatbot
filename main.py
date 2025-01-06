@@ -54,8 +54,8 @@ def query_with_language(llm, question, context="", conversation_history=""):
         else:
             language = "english"
             
-        st.write(f"Detected Language: {language}")
-
+        st.write(f"Detected Language: {'Burmese' if re.search(r'[\\u1000-\\u109F]', question) else 'English'}")
+        
         if language == "burmese":
             formatted_prompt = burmese_prompt.format(
                 conversation_history=conversation_history, question=question, context=context
