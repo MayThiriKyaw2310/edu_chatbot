@@ -9,7 +9,7 @@ api_key = st.secrets.get("OPENAI_API_KEY")
 def initialize_gpt(api_key, model_name="gpt-4"):
     return ChatOpenAI(
         model_name=model_name,
-        temperature=0.2,
+        temperature=0.1,
         openai_api_key=api_key
     )
 
@@ -68,7 +68,6 @@ def query_with_language(llm, question, context="", conversation_history=""):
         response = llm.invoke(formatted_prompt)
         response_text = response.content.strip() if hasattr(response, "content") else str(response).strip()
 
-        # Remove repetition based on whole phrases, faster method
         seen = set()
         unique_response = []
         for word in response_text.split():
