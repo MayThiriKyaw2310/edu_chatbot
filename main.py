@@ -1,4 +1,4 @@
-import re
+from langdetect import detect
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 import streamlit as st
@@ -49,7 +49,9 @@ english_prompt = PromptTemplate(
 # Query function with language detection
 def query_with_language(llm, question, context="", conversation_history=""):
     try:
-        if re.search(r"[\u1000-\u109F]", question):  
+        detected_language = detect(question) 
+        
+        if detected_language == 'my':
             language = "burmese"
         else:
             language = "english"
