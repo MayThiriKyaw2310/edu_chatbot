@@ -53,6 +53,8 @@ def query_with_language(llm, question, context="", conversation_history=""):
             language = "burmese"
         else:
             language = "english"
+            
+        st.write(f"Detected Language: {language}")
 
         if language == "burmese":
             formatted_prompt = burmese_prompt.format(
