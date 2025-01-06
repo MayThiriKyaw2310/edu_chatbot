@@ -101,7 +101,7 @@ def query_with_language(llm, question, context="", conversation_history=""):
         )
 
         # Get the model's response
-        response = llm.invoke(formatted_prompt, timeout=10)
+        response = llm.invoke(formatted_prompt)
         response_text = response.content.strip() if hasattr(response, "content") else str(response).strip()
 
         seen = set()
