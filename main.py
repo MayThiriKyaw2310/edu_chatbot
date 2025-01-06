@@ -77,7 +77,9 @@ def query_with_language(llm, question, context="", conversation_history=""):
                 unique_response.append(word)
         
         cleaned_response = ' '.join(unique_response)
-
+        if len(cleaned_response.split('.')) > 1:
+             cleaned_response = "\n".join(f"{i+1}. {step.strip()}" for i, step in enumerate(cleaned_response.split('.')))
+            
         return cleaned_response
 
     except Exception as e:
