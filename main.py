@@ -66,9 +66,7 @@ def query_with_language(llm, question, context="", conversation_history=""):
             )
         
         response = llm.invoke(formatted_prompt)
-        response_text = response.content.strip() if hasattr(response, "content") else str(response).strip()
-        response_text = ' '.join(sorted(set(response_text.split()), key=response_text.split().index))
-        return response_text
-
+        return response_text = response.content.strip() if hasattr(response, "content") else str(response).strip()
+      
     except Exception as e:
         return f"An error occurred: {str(e)}"
