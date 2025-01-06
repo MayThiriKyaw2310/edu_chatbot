@@ -129,7 +129,7 @@ def query_with_language(llm, question, context="", conversation_history=""):
                 unique_response.append(word)
         
         cleaned_response = ' '.join(unique_response)
-        final_response = finish_line_fix(cleaned_response
+        final_response = finish_line_fix(cleaned_response)
         return final_response
 
     except Exception as e:
