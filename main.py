@@ -45,7 +45,7 @@ english_prompt = PromptTemplate(
         Answer:  
     """
 )
-max_history_length =1000
+max_history_length =500
 # Query function with language detection
 def query_with_language(llm, question, context="", conversation_history=""):
     try:
