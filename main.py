@@ -66,7 +66,17 @@ def query_with_language(llm, question, context="", conversation_history=""):
             )
         
         response = llm.invoke(formatted_prompt)
-        return response.content.strip() if hasattr(response, "content") else str(response).strip()
-      
+        response_text = response.content.strip() if hasattr(response, "content") else str(response).strip()
+
+        # Remove repetition by ensuring each sentence or phrase is only included once
+        response_text = ' '.join(sorted(set(response_text.split()), key=response_text.split().index))
+
+        # Optional: Split by sentences (if appropriate) and remove duplicates within the same sentence
+        sentences = response_text.split('. ')
+        unique_sentences = list(dict.fromkeys(sentences))  # Keeps order and removes duplicates
+        cleaned_response = '. '.join(unique_sentences)
+        
+        return cleaned_response
+
     except Exception as e:
         return f"An error occurred: {str(e)}"
