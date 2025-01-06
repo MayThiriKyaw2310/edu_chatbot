@@ -6,7 +6,7 @@ import streamlit as st
 api_key = st.secrets.get("OPENAI_API_KEY")
 
 # Initialize GPT model
-def initialize_gpt(api_key, model_name="gpt-4"):
+def initialize_gpt(api_key, model_name="gpt-3.5-turbo"):
     return ChatOpenAI(
         model_name=model_name,
         temperature=0.1,
