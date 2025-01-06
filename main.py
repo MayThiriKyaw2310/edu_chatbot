@@ -26,7 +26,7 @@ burmese_prompt = PromptTemplate(
 
         မေးခွန်း: {question}
 
-        ဖြေကြားချက်: (တိကျပြီး အရေးပါသော အချက်များပဲ ရေးပါ။ များစွာ မရေးပါနဲ့)
+        ဖြေကြားချက်: (အရေးပါတဲ့ အချက်တွေကိုပဲ ရေးပါ။ များစွာ မရေးပါနဲ့)
     """
 )
 
@@ -49,9 +49,7 @@ english_prompt = PromptTemplate(
 # Query function with language detection
 def query_with_language(llm, question, context="", conversation_history=""):
     try:
-        print(f"Question: {question}")  # Debug print
         detected_language, _ = langid.classify(question)
-        print(f"Detected language: {detected_language}")  # Debug print
         
         if detected_language == 'my':
             language = "burmese"
@@ -68,11 +66,7 @@ def query_with_language(llm, question, context="", conversation_history=""):
             )
         
         response = llm.invoke(formatted_prompt)
-        print(f"Response: {response}")  # Debug print
-        
         return response.content.strip() if hasattr(response, "content") else str(response).strip()
 
     except Exception as e:
-        print(f"Error: {str(e)}")  # Debug print
         return f"An error occurred: {str(e)}"
-
