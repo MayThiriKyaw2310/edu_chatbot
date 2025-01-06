@@ -55,7 +55,7 @@ def query_with_language(llm, question, context="", conversation_history=""):
             language = "burmese"
         else:
             language = "english"
-        
+            
         if language == "burmese":
             formatted_prompt = burmese_prompt.format(
                 conversation_history=conversation_history, question=question, context=context
@@ -65,18 +65,22 @@ def query_with_language(llm, question, context="", conversation_history=""):
                 conversation_history=conversation_history, question=question, context=context
             )
         
+        # Get the model's response
         response = llm.invoke(formatted_prompt)
         response_text = response.content.strip() if hasattr(response, "content") else str(response).strip()
 
-        # Remove repetition by ensuring each sentence or phrase is only included once
-        response_text = ' '.join(sorted(set(response_text.split()), key=response_text.split().index))
-
-        # Optional: Split by sentences (if appropriate) and remove duplicates within the same sentence
-        sentences = response_text.split('. ')
-        unique_sentences = list(dict.fromkeys(sentences))  # Keeps order and removes duplicates
-        cleaned_response = '. '.join(unique_sentences)
+        # Remove repetition based on whole phrases, faster method
+        seen = set()
+        unique_response = []
+        for word in response_text.split():
+            if word not in seen:
+                seen.add(word)
+                unique_response.append(word)
         
+        cleaned_response = ' '.join(unique_response)
+
         return cleaned_response
 
     except Exception as e:
         return f"An error occurred: {str(e)}"
+
