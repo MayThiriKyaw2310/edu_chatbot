@@ -95,7 +95,7 @@ def finish_line_fix(response_text):
     If it doesn't, add a period.
     """
     # Check if the response text ends with a suitable ending punctuation
-    if response_text.endswith(('.', '!', '?','။'):
+    if response_text.endswith(('.', '!', '?','။')):
         return response_text
     else:
         # If the response doesn't end properly, add a period or any suitable ending
