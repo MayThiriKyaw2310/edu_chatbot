@@ -9,7 +9,7 @@ api_key = st.secrets.get("OPENAI_API_KEY")
 def initialize_gpt(api_key, model_name="gpt-4"):
     return ChatOpenAI(
         model_name=model_name,
-        temperature=0.1,
+        temperature=0.2,
         openai_api_key=api_key
     )
 
@@ -51,7 +51,7 @@ def query_with_language(llm, question, context="", conversation_history=""):
     try:
         detected_language, _ = langid.classify(question)
         
-        if detected_language == 'my':
+        if detected_language =='my':
             language = "burmese"
         else:
             language = "english"
