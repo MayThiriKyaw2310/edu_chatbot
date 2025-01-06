@@ -14,16 +14,10 @@ def initialize_gpt(api_key, model_name="gpt-4"):
     )
 
 # Helper functions to limit the size of the inputs
-def get_recent_conversation_history(conversation_history, num_lines=5):
-    """
-    Limit the conversation history to the most recent num_lines exchanges.
-    """
-    history_lines = conversation_history.split("\n")[-num_lines:]
-    return "\n".join(history_lines)
-
 def truncate_question(question, max_length=200):
     """
     Truncate the question if it exceeds the max_length.
+    If truncating, append "..." to indicate the question is shortened.
     """
     if len(question) > max_length:
         return question[:max_length] + "..."
@@ -32,16 +26,21 @@ def truncate_question(question, max_length=200):
 def limit_context_length(context, max_chars=500):
     """
     Limit the context to the first max_chars characters.
+    If truncating, ensure the cut-off maintains important details.
     """
-    return context[:max_chars] if len(context) > max_chars else context
+    if len(context) > max_chars:
+        return context[:max_chars] + "..."
+    return context
 
-# Function to create formatted prompt
 def create_formatted_prompt(conversation_history, question, context, burmese=True, num_history=5, max_question_length=200, max_context_length=500):
-    # Limit conversation history
+    """
+    Create the formatted prompt for the language model based on the conversation, question, and context.
+    """
+    # Limit conversation history to the most recent num_lines exchanges
     conversation_history = get_recent_conversation_history(conversation_history, num_lines=num_history)
-    # Truncate question
+    
+    # Truncate question and context based on the maximum allowed lengths
     question = truncate_question(question, max_length=max_question_length)
-    # Limit context length
     context = limit_context_length(context, max_chars=max_context_length)
 
     # Choose prompt template based on language
