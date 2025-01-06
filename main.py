@@ -90,6 +90,18 @@ english_prompt = PromptTemplate(
     """
 )
 
+def finish_line_fix(response_text):
+    """
+    Ensure the response ends with a suitable punctuation mark.
+    If it doesn't, add a period.
+    """
+    # Check if the response text ends with a suitable ending punctuation
+    if response_text.endswith(('.', '!', '?','။'):
+        return response_text
+    else:
+        # If the response doesn't end properly, add a period or any suitable ending
+        return response_text + "."
+        
 # Query function with language detection
 def query_with_language(llm, question, context="", conversation_history=""):
     try:
@@ -117,7 +129,8 @@ def query_with_language(llm, question, context="", conversation_history=""):
                 unique_response.append(word)
         
         cleaned_response = ' '.join(unique_response)
-        return cleaned_response
+        final_response = finish_line_fix(cleaned_response
+        return final_response
 
     except Exception as e:
         return f"An error occurred: {str(e)}"
