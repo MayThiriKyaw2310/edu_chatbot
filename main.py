@@ -49,7 +49,7 @@ english_prompt = PromptTemplate(
 # Query function with language detection
 def query_with_language(llm, question, context="", conversation_history=""):
     try:
-       detected_language, _ = langid.classify(question) 
+        detected_language, _ = langid.classify(question)
         
         if detected_language == 'my':
             language = "burmese"
