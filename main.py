@@ -89,7 +89,6 @@ english_prompt = PromptTemplate(
         Answer:  
     """
 )
-
 def finish_line_fix(response_text):
     """
     Ensure the response ends with a suitable punctuation mark.
