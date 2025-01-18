@@ -37,14 +37,10 @@ def limit_context_length(context, max_chars=500):
 
 # Function to create formatted prompt with enhanced clarity
 def create_formatted_prompt(conversation_history, question, context, burmese=True, num_history=5, max_question_length=200, max_context_length=500):
-    # Limit conversation history
     conversation_history = get_recent_conversation_history(conversation_history, num_lines=num_history)
-    # Truncate question
     question = truncate_question(question, max_length=max_question_length)
-    # Limit context length
     context = limit_context_length(context, max_chars=max_context_length)
 
-    # Choose prompt template based on language
     if burmese:
         formatted_prompt = burmese_prompt.format(conversation_history=conversation_history, question=question, context=context)
     else:
@@ -52,7 +48,6 @@ def create_formatted_prompt(conversation_history, question, context, burmese=Tru
 
     return formatted_prompt
 
-# Updated Prompts for Burmese and English (Clearer Instructions)
 burmese_prompt = PromptTemplate(
     input_variables=["conversation_history", "question", "context"],
     template="""
@@ -85,7 +80,6 @@ english_prompt = PromptTemplate(
     """
 )
 
-# Define the clean_response function
 def clean_response(response):
     """
     Clean and format the response text.
@@ -96,7 +90,6 @@ def clean_response(response):
     response = ' '.join(response.split())  # Remove extra spaces
     return response
 
-# Query function with language detection
 def query_with_language(llm, question, context="", conversation_history=""):
     try:
         detected_language, _ = langid.classify(question)
@@ -105,17 +98,12 @@ def query_with_language(llm, question, context="", conversation_history=""):
             language = "burmese"
         else:
             language = "english"
-        
-        # Create a formatted prompt with a limited size
         formatted_prompt = create_formatted_prompt(
             conversation_history, question, context, burmese=(language=="burmese")
         )
         
-        # Get the model's response
         response = llm.invoke(formatted_prompt)
         response_text = response.content.strip() if hasattr(response, "content") else str(response).strip()
-        
-        # Clean and format the response
         cleaned_response = clean_response(response_text)
         
         return cleaned_response
