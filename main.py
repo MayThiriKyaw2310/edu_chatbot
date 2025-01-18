@@ -10,7 +10,6 @@ def initialize_gpt(api_key, model_name="gpt-4"):
     return ChatOpenAI(
         model_name=model_name,
         temperature=0.2,  # Lower temperature for more focused and relevant answers
-        max_tokens=200,  # Limit the response length to keep it concise
         openai_api_key=api_key
     )
 
