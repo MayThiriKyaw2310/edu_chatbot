@@ -50,4 +50,4 @@ Before you begin, ensure you have the following installed:
 To start the chatbot, run the following command:
 
 ```bash
-python chat.py
+python app.py
