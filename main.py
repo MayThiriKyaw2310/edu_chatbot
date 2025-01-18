@@ -89,7 +89,7 @@ english_prompt = PromptTemplate(
 def clean_response(response):
     """
     Clean and format the response text.
-    This can include removing unnecessary punctuation, fixing grammar, etc.
+    This can include removing unnecessary punctuation, fixing grammar,and eliminating redundant or repeated information, etc.
     """
     # Example: Strip whitespace and remove multiple newlines or extra spaces.
     response = response.strip()
