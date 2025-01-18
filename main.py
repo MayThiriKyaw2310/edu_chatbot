@@ -5,11 +5,12 @@ import streamlit as st
 
 api_key = st.secrets.get("OPENAI_API_KEY")
 
-# Initialize GPT model
+# Initialize GPT model with improved settings
 def initialize_gpt(api_key, model_name="gpt-4"):
     return ChatOpenAI(
         model_name=model_name,
-        temperature=0.1,
+        temperature=0.2,  # Lower temperature for more focused and relevant answers
+        max_tokens=200,  # Limit the response length to keep it concise
         openai_api_key=api_key
     )
 
@@ -35,7 +36,7 @@ def limit_context_length(context, max_chars=500):
     """
     return context[:max_chars] if len(context) > max_chars else context
 
-# Function to create formatted prompt
+# Function to create formatted prompt with enhanced clarity
 def create_formatted_prompt(conversation_history, question, context, burmese=True, num_history=5, max_question_length=200, max_context_length=500):
     # Limit conversation history
     conversation_history = get_recent_conversation_history(conversation_history, num_lines=num_history)
@@ -52,11 +53,11 @@ def create_formatted_prompt(conversation_history, question, context, burmese=Tru
 
     return formatted_prompt
 
-# Prompts for Burmese and English
+# Updated Prompts for Burmese and English (Clearer Instructions)
 burmese_prompt = PromptTemplate(
     input_variables=["conversation_history", "question", "context"],
     template="""
-        သင်သည် ပညာရေးနှင့် အလုပ်အကိုင်ဆိုင်ရာ မေးခွန်းများအတွက် ကျောင်းသားများကို အကြံဉာဏ်ပေးသူ ဖြစ်ပါသည်။ အတိုချုံးပြီး အရေးပါသည့် အချက်များကိုသာ ပေးပါ။ conversation history နှင့် context အပေါ် အခြေခံပြီး တိုတို ရိုးရှင်းသော ဖြေကြားချက်ပေးပါ။
+        သင်သည် ပညာရေးနှင့် အလုပ်အကိုင်ဆိုင်ရာ မေးခွန်းများအတွက် ကျောင်းသားများကို အကြံဉာဏ်ပေးသူ ဖြစ်ပါသည်။ အကြောင်းအရာ အရေးပါသည့်အချက်များကိုသာ ရေးပါ။ conversation history နှင့် context ကို အခြေခံပြီး ရိုးရှင်းပြီး ထိရောက်သော ဖြေကြားချက်များ ပေးပါ။
 
         စကားဝိုင်းမှတ်တမ်း:
         {conversation_history}
@@ -65,14 +66,14 @@ burmese_prompt = PromptTemplate(
 
         မေးခွန်း: {question}
 
-        ဖြေကြားချက်: (တိုတောင်းပြီး အရေးပါသော အချက်များပဲ ရေးပါ။ များစွာ မရေးပါနဲ့)
+        ဖြေကြားချက်: (ရိုးရှင်းပြီး အရေးပါတဲ့ အချက်များသာ ရေးပါ။ များစွာ မရေးပါနဲ့)
     """
 )
 
 english_prompt = PromptTemplate(
     input_variables=["conversation_history", "question", "context"],
     template="""
-        You are an educational advisor helping students with their academic and career-related questions. Provide concise and relevant answers based on the conversation history and context.
+        You are an educational advisor helping students with their academic and career-related questions. Provide clear, concise, and relevant answers based on the conversation history and context.
 
         Conversation History:
         {conversation_history}
@@ -81,7 +82,7 @@ english_prompt = PromptTemplate(
 
         Question: {question}
 
-        Answer:  
+        Answer: (Please write a concise, clear, and focused response, providing only the most important details. Avoid unnecessary elaboration.)
     """
 )
 
@@ -89,9 +90,12 @@ english_prompt = PromptTemplate(
 def clean_response(response):
     """
     Clean and format the response text.
-    This can include stripping whitespace, removing special characters, etc.
+    This can include removing unnecessary punctuation, fixing grammar, etc.
     """
-    return response.strip()  # Just strip excess whitespace as an example
+    # Example: Strip whitespace and remove multiple newlines or extra spaces.
+    response = response.strip()
+    response = ' '.join(response.split())  # Remove extra spaces
+    return response
 
 # Query function with language detection
 def query_with_language(llm, question, context="", conversation_history=""):
