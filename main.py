@@ -85,6 +85,14 @@ english_prompt = PromptTemplate(
     """
 )
 
+# Define the clean_response function
+def clean_response(response):
+    """
+    Clean and format the response text.
+    This can include stripping whitespace, removing special characters, etc.
+    """
+    return response.strip()  # Just strip excess whitespace as an example
+
 # Query function with language detection
 def query_with_language(llm, question, context="", conversation_history=""):
     try:
