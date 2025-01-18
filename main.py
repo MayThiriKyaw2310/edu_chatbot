@@ -89,34 +89,24 @@ english_prompt = PromptTemplate(
 def query_with_language(llm, question, context="", conversation_history=""):
     try:
         detected_language, _ = langid.classify(question)
-        print(f"Detected Language: {detected_language}")  # Debugging: Print detected language
         
         if detected_language == 'my':
             language = "burmese"
         else:
             language = "english"
-            
+        
         # Create a formatted prompt with a limited size
         formatted_prompt = create_formatted_prompt(
             conversation_history, question, context, burmese=(language=="burmese")
         )
         
-        print(f"Formatted Prompt: {formatted_prompt}")  # Debugging: Print formatted prompt
-
         # Get the model's response
         response = llm.invoke(formatted_prompt)
         response_text = response.content.strip() if hasattr(response, "content") else str(response).strip()
-
-        print(f"Raw Response: {response_text}")  # Debugging: Print raw response
         
-        seen = set()
-        unique_response = []
-        for word in response_text.split():
-            if word not in seen:
-                seen.add(word)
-                unique_response.append(word)
+        # Clean and format the response
+        cleaned_response = clean_response(response_text)
         
-        cleaned_response = ' '.join(unique_response)
         return cleaned_response
 
     except Exception as e:
